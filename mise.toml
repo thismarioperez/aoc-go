@@ -8,14 +8,12 @@ _.path = ["./bin"]
 description = "Build the CLI"
 run = "go build -o bin/aoc ./cmd/aoc"
 
-[tasks.run]
-description = "Run solution(s) - use YEAR and DAY env vars"
+[tasks.solve]
+description = "Run solution(s) - usage: mise run solve [year] [day]"
 depends = ["build"]
 run = """
 #!/usr/bin/env bash
-YEAR="${YEAR:-$(date +%Y)}"
-DAY="${DAY:-0}"
-./bin/aoc -year="$YEAR" -day="$DAY"
+./bin/aoc -year="{{arg(i=0, name='year')}}" -day="{{arg(i=1, name='day', default='0')}}"
 """
 
 [tasks.test]
@@ -23,13 +21,11 @@ description = "Run all tests"
 run = "go test ./..."
 
 [tasks.test-day]
-description = "Run tests for specific YEAR/DAY"
+description = "Run tests for specific day - usage: mise run test-day <year> <day>"
 run = """
 #!/usr/bin/env bash
-if [[ -z "$YEAR" || -z "$DAY" ]]; then
-  echo "Usage: YEAR=2025 DAY=1 mise run test-day"
-  exit 1
-fi
+YEAR="{{arg(i=0, name='year')}}"
+DAY="{{arg(i=1, name='day')}}"
 DAY_PADDED=$(printf '%02d' "$DAY")
 go test "./years/$YEAR/day$DAY_PADDED/..."
 """
@@ -43,13 +39,11 @@ description = "Clean build artifacts"
 run = "rm -rf bin/"
 
 [tasks.new-day]
-description = "Create a new day from template"
+description = "Create a new day from template - usage: mise run new-day <year> <day>"
 run = """
 #!/usr/bin/env bash
-if [[ -z "$YEAR" || -z "$DAY" ]]; then
-  echo "Usage: YEAR=2025 DAY=2 mise run new-day"
-  exit 1
-fi
+YEAR="{{arg(i=0, name='year')}}"
+DAY="{{arg(i=1, name='day')}}"
 
 DAY_PADDED=$(printf '%02d' "$DAY")
 DIR="years/$YEAR/day$DAY_PADDED"
@@ -80,7 +74,7 @@ echo "  _ \"aoc/years/$YEAR/day$DAY_PADDED\""
 """
 
 [tasks.download]
-description = "Download input (requires AOC_SESSION env var)"
+description = "Download input - usage: mise run download <year> <day>"
 run = """
 #!/usr/bin/env bash
 if [[ -z "$AOC_SESSION" ]]; then
@@ -88,10 +82,8 @@ if [[ -z "$AOC_SESSION" ]]; then
   exit 1
 fi
 
-if [[ -z "$YEAR" || -z "$DAY" ]]; then
-  echo "Usage: YEAR=2025 DAY=1 mise run download"
-  exit 1
-fi
+YEAR="{{arg(i=0, name='year')}}"
+DAY="{{arg(i=1, name='day')}}"
 
 DAY_PADDED=$(printf '%02d' "$DAY")
 DIR="years/$YEAR/day$DAY_PADDED"

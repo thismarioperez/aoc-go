@@ -43,16 +43,16 @@ mise install
 mise run build
 
 # Run a specific day
-mise run run YEAR=2025 DAY=1
+mise run solve 2025 1
 
 # Run all days for a year
-mise run run YEAR=2025
+mise run solve 2025
 
 # Run tests
 mise run test
 
 # Create a new day from template
-mise run new-day YEAR=2025 DAY=2
+mise run new-day 2025 2
 
 # List all available tasks
 mise tasks
@@ -82,7 +82,7 @@ mise tasks
 1. Create the day directory:
 
     ```bash
-    mise run new-day YEAR=2025 DAY=2
+    mise run new-day 2025 2
     ```
 
 2. Add the import to `years/register.go`:
@@ -155,20 +155,20 @@ Set your session cookie and use:
 
 ```bash
 export AOC_SESSION="your-session-cookie"
-mise run download YEAR=2025 DAY=1
+mise run download 2025 1
 ```
 
 To get your session cookie, log into adventofcode.com and copy the `session` cookie value from your browser's developer tools.
 
 ## Available Tasks
 
-| Task                | Description                     |
-| ------------------- | ------------------------------- |
-| `mise run build`    | Build the CLI                   |
-| `mise run run`      | Run solution(s) with YEAR/DAY   |
-| `mise run test`     | Run all tests                   |
-| `mise run test-day` | Run tests for specific YEAR/DAY |
-| `mise run bench`    | Run benchmarks                  |
-| `mise run new-day`  | Create new day from template    |
-| `mise run download` | Download puzzle input           |
-| `mise run clean`    | Clean build artifacts           |
+| Task                | Description                                         |
+| ------------------- | --------------------------------------------------- |
+| `mise run build`    | Build the CLI                                       |
+| `mise run solve`    | Run solution(s): `mise run solve <year> [day]`      |
+| `mise run test`     | Run all tests                                       |
+| `mise run test-day` | Run tests for day: `mise run test-day <year> <day>` |
+| `mise run bench`    | Run benchmarks                                      |
+| `mise run new-day`  | Create new day: `mise run new-day <year> <day>`     |
+| `mise run download` | Download input: `mise run download <year> <day>`    |
+| `mise run clean`    | Clean build artifacts                               |
