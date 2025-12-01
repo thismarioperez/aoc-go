@@ -10,5 +10,6 @@ import (
 	// ... add more days as you solve them
 	// 2024
 	_ "aoc/years/2024/day01"
+	_ "aoc/years/2024/day02"
 	// ... add more years/days as needed
 )
