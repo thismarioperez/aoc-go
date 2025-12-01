@@ -1,0 +1,103 @@
+[tools]
+go = "1.25.4"
+
+[env]
+_.path = ["./bin"]
+
+[tasks.build]
+description = "Build the CLI"
+run = "go build -o bin/aoc ./cmd/aoc"
+
+[tasks.run]
+description = "Run solution(s) - use YEAR and DAY env vars"
+depends = ["build"]
+run = """
+#!/usr/bin/env bash
+YEAR="${YEAR:-$(date +%Y)}"
+DAY="${DAY:-0}"
+./bin/aoc -year="$YEAR" -day="$DAY"
+"""
+
+[tasks.test]
+description = "Run all tests"
+run = "go test ./..."
+
+[tasks.test-day]
+description = "Run tests for specific YEAR/DAY"
+run = """
+#!/usr/bin/env bash
+if [[ -z "$YEAR" || -z "$DAY" ]]; then
+  echo "Usage: YEAR=2025 DAY=1 mise run test-day"
+  exit 1
+fi
+DAY_PADDED=$(printf '%02d' "$DAY")
+go test "./years/$YEAR/day$DAY_PADDED/..."
+"""
+
+[tasks.bench]
+description = "Run benchmarks"
+run = "go test -bench=. -benchmem ./..."
+
+[tasks.clean]
+description = "Clean build artifacts"
+run = "rm -rf bin/"
+
+[tasks.new-day]
+description = "Create a new day from template"
+run = """
+#!/usr/bin/env bash
+if [[ -z "$YEAR" || -z "$DAY" ]]; then
+  echo "Usage: YEAR=2025 DAY=2 mise run new-day"
+  exit 1
+fi
+
+DAY_PADDED=$(printf '%02d' "$DAY")
+DIR="years/$YEAR/day$DAY_PADDED"
+
+mkdir -p "$DIR"
+
+if [[ ! -f "$DIR/solution.go" ]]; then
+  sed "s/day01/day$DAY_PADDED/g; s/2025/$YEAR/g; s/Register($YEAR, 1,/Register($YEAR, $DAY,/g" \
+    years/2025/day01/solution.go > "$DIR/solution.go"
+  echo "Created $DIR/solution.go"
+else
+  echo "$DIR/solution.go already exists"
+fi
+
+if [[ ! -f "$DIR/solution_test.go" ]]; then
+  sed "s/day01/day$DAY_PADDED/g" \
+    years/2025/day01/solution_test.go > "$DIR/solution_test.go"
+  echo "Created $DIR/solution_test.go"
+else
+  echo "$DIR/solution_test.go already exists"
+fi
+
+touch "$DIR/input.txt"
+
+echo ""
+echo "Don't forget to add the import to years/register.go:"
+echo "  _ \"aoc/years/$YEAR/day$DAY_PADDED\""
+"""
+
+[tasks.download]
+description = "Download input (requires AOC_SESSION env var)"
+run = """
+#!/usr/bin/env bash
+if [[ -z "$AOC_SESSION" ]]; then
+  echo "Set AOC_SESSION environment variable with your session cookie"
+  exit 1
+fi
+
+if [[ -z "$YEAR" || -z "$DAY" ]]; then
+  echo "Usage: YEAR=2025 DAY=1 mise run download"
+  exit 1
+fi
+
+DAY_PADDED=$(printf '%02d' "$DAY")
+DIR="years/$YEAR/day$DAY_PADDED"
+
+mkdir -p "$DIR"
+curl -s -b "session=$AOC_SESSION" \
+  "https://adventofcode.com/$YEAR/day/$DAY/input" > "$DIR/input.txt"
+echo "Downloaded input to $DIR/input.txt"
+"""
