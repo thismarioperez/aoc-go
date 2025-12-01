@@ -1,9 +1,8 @@
 package day01
 
 import (
-	"sort"
+	"fmt"
 	"strconv"
-	"strings"
 
 	"aoc/internal/runner"
 	"aoc/pkg/utils"
@@ -16,53 +15,83 @@ func init() {
 type Solution struct{}
 
 func (s *Solution) Part1(input string) (string, error) {
-	left, right := parseInput(input)
+	position := 50
+	hits := 0
 
-	sort.Ints(left)
-	sort.Ints(right)
+	deltas, err := parseInput(input)
 
-	total := 0
-	for i := range left {
-		total += utils.Abs(left[i] - right[i])
+	if err != nil {
+		return "", fmt.Errorf("failed to parse input: %w", err)
 	}
 
-	return strconv.Itoa(total), nil
-}
+	for _, delta := range deltas {
+		position = position + delta
 
-func (s *Solution) Part2(input string) (string, error) {
-	left, right := parseInput(input)
+		if position%100 == 0 {
+			hits++
+		}
 
-	// Count occurrences in right list
-	counts := make(map[int]int)
-	for _, n := range right {
-		counts[n]++
-	}
-
-	// Calculate similarity score
-	total := 0
-	for _, n := range left {
-		total += n * counts[n]
-	}
-
-	return strconv.Itoa(total), nil
-}
-
-func parseInput(input string) ([]int, []int) {
-	lines := utils.Lines(input)
-	left := make([]int, 0, len(lines))
-	right := make([]int, 0, len(lines))
-
-	for _, line := range lines {
-		fields := strings.Fields(line)
-		if len(fields) >= 2 {
-			l, _ := strconv.Atoi(fields[0])
-			r, _ := strconv.Atoi(fields[1])
-			left = append(left, l)
-			right = append(right, r)
+		if position < 0 {
+			position += 100
+		} else if position > 99 {
+			position -= 100
 		}
 	}
 
-	return left, right
+	return strconv.Itoa(hits), nil
+}
+
+func (s *Solution) Part2(input string) (string, error) {
+	position := 50
+	hits := 0
+
+	deltas, err := parseInput(input)
+
+	if err != nil {
+		return "", fmt.Errorf("failed to parse input: %w", err)
+	}
+
+	for _, delta := range deltas {
+		for i := 0; i < utils.Abs(delta); i++ {
+			position = position + utils.Sign(delta)
+			if position%100 == 0 {
+				hits++
+			}
+			if position < 0 {
+				position += 100
+			} else if position > 99 {
+				position -= 100
+			}
+		}
+	}
+
+	return strconv.Itoa(hits), nil
+}
+
+type Direction string
+
+const (
+	DirectionLeft  Direction = "L"
+	DirectionRight Direction = "R"
+)
+
+func parseInput(input string) ([]int, error) {
+	lines := utils.Lines(input)
+	deltas := make([]int, 0, len(lines))
+
+	for _, line := range lines {
+		direction := string(line[0])
+		delta, err := strconv.Atoi(line[1:])
+		if direction == string(DirectionLeft) {
+			delta = -delta
+		}
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse delta: %w", err)
+		}
+		deltas = append(deltas, delta)
+	}
+
+	return deltas, nil
 }
 
 // Ensure Solution implements runner.Solution

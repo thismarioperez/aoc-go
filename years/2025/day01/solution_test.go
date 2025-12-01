@@ -2,12 +2,16 @@ package day01
 
 import "testing"
 
-const exampleInput = `3   4
-4   3
-2   5
-1   3
-3   9
-3   3`
+const exampleInput = `L68
+L30
+R48
+L5
+R60
+L55
+L1
+L99
+R14
+L82`
 
 func TestPart1(t *testing.T) {
 	s := &Solution{}
@@ -16,7 +20,7 @@ func TestPart1(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "11"
+	expected := "3"
 	if result != expected {
 		t.Errorf("Part1() = %q, want %q", result, expected)
 	}
@@ -29,7 +33,7 @@ func TestPart2(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "31"
+	expected := "6"
 	if result != expected {
 		t.Errorf("Part2() = %q, want %q", result, expected)
 	}
