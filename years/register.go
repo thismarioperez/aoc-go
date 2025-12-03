@@ -12,5 +12,5 @@ import (
 	_ "aoc/years/2024/day01"
 	_ "aoc/years/2024/day02"
 	_ "aoc/years/2024/day03"
-	// _ "aoc/years/2024/day04"
+	_ "aoc/years/2024/day04"
 )

@@ -19,6 +19,9 @@ var (
 	// Cardinal directions (4-way)
 	Cardinals = []Point{Up, Right, Down, Left}
 
+	// Diagonal directions (4-way)
+	Diagonals = []Point{UpRight, DownRight, DownLeft, UpLeft}
+
 	// All 8 directions
 	AllDirs = []Point{Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft}
 )
