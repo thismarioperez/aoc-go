@@ -8,6 +8,7 @@ import (
 	_ "aoc/years/2025/day01"
 	_ "aoc/years/2025/day02"
 	_ "aoc/years/2025/day03"
+	_ "aoc/years/2025/day04"
 
 	// 2024
 	_ "aoc/years/2024/day01"
