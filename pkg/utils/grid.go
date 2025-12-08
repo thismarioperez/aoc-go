@@ -117,3 +117,13 @@ func FindInGrid(grid [][]byte, target byte) []Point {
 	}
 	return result
 }
+
+// CopyGrid copies returns a deep copy of a grid
+func CopyGrid(src [][]byte) [][]byte {
+	dst := make([][]byte, len(src))
+	for i := range src {
+		dst[i] = make([]byte, len(src[i]))
+		copy(dst[i], src[i])
+	}
+	return dst
+}
